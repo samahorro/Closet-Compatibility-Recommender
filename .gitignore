@@ -1,24 +1,21 @@
+# Python virtual environment
 .venv/
 venv/
+
+# Python cache
 __pycache__/
-*.py[cod]
-.pytest_cache/
-.ipynb_checkpoints/
+*.pyc
+
+# Polyvore dataset and generated files
+data/raw/
+data/processed/
+
+# Hugging Face credentials and cache
 .env
-.env.*
-!.env.example
-.DS_Store
-.vscode/
-.idea/
-data/raw/*
-!data/raw/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
-ml/models/*
-!ml/models/.gitkeep
-ml/results/*
-!ml/results/.gitkeep
-*.joblib
+.hf_home/
+.cache/
+
+# Model artifacts
 *.pt
 *.pth
-*.onnx
+*.pkl
