@@ -4,6 +4,7 @@ from rembg import remove
 from PIL import Image
 from io import BytesIO
 
+# Configure the application title and navigation
 st.set_page_config(page_title="Closet Compatibility Recommender", page_icon="👕")
 st.title("Closet Compatibility Recommender")
 st.caption("AI outfit recommendations using items you already own")
@@ -13,6 +14,8 @@ def load_bg_remover():
     from rembg import new_session
     return new_session("u2net")
 
+
+# Remove the background from an uploaded clothing image
 def remove_bg(image_bytes):
     session = load_bg_remover()
     processed_bytes = remove(image_bytes, session=session)
@@ -23,6 +26,8 @@ def remove_bg(image_bytes):
 # __________________________________________________Temporary Code________________________________________________________
 if mode == "My Closet":
     # st.info("Coming next: Upload your items and build compatible outfits.")
+    
+    # Initialize a temporary wardrobe that continues across Stremlit reruns
     if "closet" not in st.session_state:
         st.session_state.closet = []
     st.header("My Closet")
@@ -35,6 +40,8 @@ if mode == "My Closet":
     if user_uploaded_file is not None:
         st.image(user_uploaded_file, caption="Uploaded clothing item", width=300)
 
+
+        # Process the uploaded photo and store the transparent PNG
         if st.button("Remove Background"):
             with st.spinner("Removing background. Please wait"):
                 processed_image = remove_bg(user_uploaded_file.getvalue())
@@ -83,4 +90,6 @@ if mode == "My Closet":
 # ________________________________________________________________________________________________________________________
 
 else:
-    st.info("Coming next: Add a shopping item to estimate versatility and cost per outfit.")
+    #st.info("Coming next: Add a shopping item to estimate versatility and cost per outfit.")
+    st.header("Should I Buy This?")
+    st.write("Upload a photo of a clothing item you're thinking about buying.")
