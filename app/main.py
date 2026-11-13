@@ -71,21 +71,21 @@ if mode == "My Closet":
             st.session_state.closet.append(clothing_item)
             st.success("Clothing item added to your closet!")
         
-    st.subheader("Your Wardrobe")
-    if len(st.session_state.closet) == 0:
-        st.info("Your closet is empty!")
-    else:
-        columns = st.columns(3)
+        st.subheader("Your Wardrobe")
+        if len(st.session_state.closet) == 0:
+            st.info("Your closet is empty!")
+        else:
+            columns = st.columns(3)
 
-        for index, item in enumerate(st.session_state.closet):
-            with columns[index % 3]:
-                st.image(item["image"], width= "stretch")
-                st.write(item["name"])
-                st.caption(item["category"])
+            for index, item in enumerate(st.session_state.closet):
+                with columns[index % 3]:
+                    st.image(item["image"], width= "stretch")
+                    st.write(item["name"])
+                    st.caption(item["category"])
 
-                if st.button("Remove", key=f"remove_{index}"):
-                    st.session_state.closet.pop(index)
-                    st.rerun()
+                    if st.button("Remove", key=f"remove_{index}"):
+                        st.session_state.closet.pop(index)
+                        st.rerun()
 
 # ________________________________________________________________________________________________________________________
 
@@ -93,3 +93,68 @@ else:
     #st.info("Coming next: Add a shopping item to estimate versatility and cost per outfit.")
     st.header("Should I Buy This?")
     st.write("Upload a photo of a clothing item you're thinking about buying.")
+
+    shopping_item = st.file_uploader(
+        "Pick a clocthing image", type=["jpg", "jpeg", "png"], key = "shopping_upload"
+    )
+
+    if shopping_item is not None:
+        st.image(
+            shopping_item, caption="Potential purchase", width=300
+        )
+
+        shopping_label = st.selectbox("Select a category", 
+                                      ["Top", "Bottom", "Shoes", "Outerwear", "Accessory"],
+                                      key = "shopping_category"
+                                      )
+        clothing_price = st.number_input(
+            "Price of the item ($)",
+            min_value=0.0,
+            value= None,
+            step = 1.0,
+            placeholder="Enter the price (optional)",
+            key="clothing_price"
+        )
+
+        shopping_item_bytes = shopping_item.getvalue()
+        if st.button("Remove Shopping Background"):
+            with st.spinner("Removing background. Please wait..."):
+                processed_shopping = remove_bg(shopping_item_bytes)
+                buffer = BytesIO()
+                processed_shopping.save(buffer, format="PNG")
+                st.session_state.shopping_processed_image = buffer.getvalue()
+                st.session_state.shopping_original_bytes = shopping_item_bytes
+        if("shopping_processed_image" in st.session_state and st.session_state.get("shopping_original_bytes") == shopping_item_bytes):
+            st.image(
+                st.session_state.shopping_processed_image, caption="Shopping background removed",
+                width = 300
+            )
+    if st.button("Evaluate Item", key="evaluate_shopping"):
+        if len(st.session_state.get("closet", [])) == 0:
+            st.warning("It's empty in here! \nWhy not add some clothing in your closet before evaluating a purchase.")
+        else:
+            st.subheader("Purchase Evaluation")
+            st.success("Closet ready for evaluation!")
+
+            st.write("Versatility Score")
+            st.info("PLACE HOLDER")
+
+            st.write("Best Matching Items")
+            st.info("PLACE HOLDER")
+            closet_contents = st.session_state.get("closet", [])
+            if len(closet_contents) > 0:
+                columns = st.columns(3)
+
+                for index, item in enumerate(closet_contents):
+                    with columns[index % 3]:
+                        st.image(item["image"], width = "stretch")
+                        st.caption(item["category"])
+            else:
+                st.info("No clothing items ready")
+
+            st.write("Similar clothing items already owned")
+            st.info("PLACE HOLDER")
+
+            if clothing_price is not None:
+                st.write("Cost Per Outfit")
+                st.info("PLACE HOLDER")
