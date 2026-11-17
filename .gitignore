@@ -19,3 +19,8 @@ data/processed/
 *.pt
 *.pth
 *.pkl
+
+# Trained models: shared through Google Drive, not Git
+ml/models/*
+!ml/models/.gitkeep
+*.joblib
